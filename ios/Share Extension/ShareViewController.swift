@@ -12,9 +12,9 @@ import MobileCoreServices
 import Photos
 
 class ShareViewController: SLComposeServiceViewController {
-    let hostAppBundleIdentifier = "com.example.flutterPickPlace"
+    var hostAppBundleIdentifier = "com.example.flutterPickPlace"
     var appGroupId = ""
-    let sharedKey = "ShareKey"
+    var sharedKey = "ShareKey"
     var sharedMedia: [SharedMediaFile] = []
     var sharedText: [String] = []
     let imageContentType = kUTTypeImage as String
