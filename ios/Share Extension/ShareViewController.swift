@@ -45,6 +45,7 @@ class ShareViewController: SLComposeServiceViewController {
             }
         }
     }
+
     override func didSelectPost() {
         // This is called after the user selects Post. Do the upload of contentText and/or NSExtensionContext attachments.
         debugPrint("didSelectPost")
@@ -55,6 +56,12 @@ class ShareViewController: SLComposeServiceViewController {
             var urlString = "ShareMedia://"
             if let sharedText = self.sharedText {
                 urlString += "?text=" + sharedText
+            }
+            if let sharedURL = self.sharedURL {
+                urlString += "&url=" + sharedURL.absoluteString
+            }
+            if let sharedMetaTag = self.sharedMetaTag {
+                urlString += "&metatag=" + sharedMetaTag
             }
             if let url = URL(string: urlString) {
                 let selectorOpenURL = sel_registerName("openURL:")
@@ -69,5 +76,6 @@ class ShareViewController: SLComposeServiceViewController {
             }
         })
     }
+
 
 }
