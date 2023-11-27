@@ -6,7 +6,7 @@
 	<true/>
 	<key>com.apple.developer.associated-domains</key>
     <array>
-        <string>applinks:example.com</string>
+        <string>group.com.pick.Share</string>
     </array>
 </dict>
 </plist>

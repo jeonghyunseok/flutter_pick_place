@@ -25,6 +25,8 @@
 				<key>NSExtensionActivationSupportsFileWithMaxCount</key>
 				<integer>1</integer>
             </dict>
+            <key>NSExtensionActivationRule</key>
+            <string>SUBQUERY(extensionItems,$extensionItem,SUBQUERY($extensionItem.attachments,$attachment,SUBQUERY($attachment.registeredTypeIdentifiers, $uti, $uti UTI-CONFORMS-TO "public.url" AND NOT $uti UTI-CONFORMS-TO "public.file-url").@count &gt;= 1).@count &gt;= 1).@count &gt;= 1</string>
         </dict>
 		<key>NSExtensionMainStoryboard</key>
 		<string>MainInterface</string>

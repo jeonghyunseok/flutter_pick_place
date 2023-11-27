@@ -82,7 +82,7 @@ class _MyAppState extends State<MyApp> {
                   .join(",\n") ??
                   ""),
               SizedBox(height: 100),
-              const Text("Shared urls/text:", style: textStyleBold),
+              const Text("Shared urls/text 2:", style: textStyleBold),
               Text(_sharedText ?? "")
             ],
           ),
