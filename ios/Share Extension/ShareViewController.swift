@@ -1,39 +1,73 @@
 import UIKit
 import Social
+import MobileCoreServices
+import CoreLocation
 
 class ShareViewController: SLComposeServiceViewController {
 
-    override func isContentValid() -> Bool {
-        // Do validation of contentText and/or NSExtensionContext attachments here
-        
-        // contentText : 유저가 공유하기 창을 눌러 넘어온 문자열 값(상수)
-        if let currentMessage = contentText{
-            let currentMessageLength = currentMessage.count
-            // charactersRemaining : 문자열 길이 제한 값(상수)
-            charactersRemaining = (100 - currentMessageLength) as NSNumber
-            
-            print("currentMessage : \(currentMessage) // 길이 : \(currentMessageLength) // 제한 : \(charactersRemaining)")
-            if Int(charactersRemaining) < 0 {
-                print("100자가 넘었을때는 공유할 수 없다!")
-                return false
+    var sharedImage: UIImage?
+    var sharedText: String?
+    var sharedURL: URL?
+    var sharedLocation: CLLocation?
+    var sharedMetaTag: String?
+
+    override func viewDidLoad() {
+        super.viewDidLoad()
+
+        if let content = extensionContext?.inputItems.first as? NSExtensionItem {
+            for attachment in content.attachments! {
+                let itemProvider = attachment
+
+                if itemProvider.hasItemConformingToTypeIdentifier(kUTTypeImage as String) {
+                    // Image
+                    itemProvider.loadItem(forTypeIdentifier: kUTTypeImage as String, options: nil, completionHandler: { (img, error) in
+                        if let img = img as? UIImage {
+                            self.sharedImage = img
+                        }
+                    })
+                } else if itemProvider.hasItemConformingToTypeIdentifier(kUTTypeText as String) {
+                    // Text
+                    itemProvider.loadItem(forTypeIdentifier: kUTTypeText as String, options: nil, completionHandler: { (text, error) in
+                        if let text = text as? String {
+                            self.sharedText = text
+                        }
+                    })
+                } else if itemProvider.hasItemConformingToTypeIdentifier(kUTTypeURL as String) {
+                    // URL
+                    itemProvider.loadItem(forTypeIdentifier: kUTTypeURL as String, options: nil, completionHandler: { (url, error) in
+                        if let url = url as? URL {
+                            self.sharedURL = url
+                            // MetaTag
+                            // Here you can use a library like SwiftSoup to parse the HTML and get the meta tags.
+                        }
+                    })
+                }
             }
         }
-        return true
     }
-
     override func didSelectPost() {
         // This is called after the user selects Post. Do the upload of contentText and/or NSExtensionContext attachments.
+        debugPrint("didSelectPost")
 
-        // Inform the host that we're done, so it un-blocks its UI. Note: Alternatively you could call super's -didSelectPost, which will similarly complete the extension context.
-        self.extensionContext!.completeRequest(returningItems: [], completionHandler: nil)
+        // Inform the host that we're done, so it un-blocks its UI.
+        self.extensionContext!.completeRequest(returningItems: [], completionHandler: { _ in
+            // Open your app here
+            var urlString = "ShareMedia://"
+            if let sharedText = self.sharedText {
+                urlString += "?text=" + sharedText
+            }
+            if let url = URL(string: urlString) {
+                let selectorOpenURL = sel_registerName("openURL:")
+                var responder: UIResponder? = self
+                while responder != nil {
+                    if responder!.responds(to: selectorOpenURL) {
+                        responder!.perform(selectorOpenURL, with: url)
+                        break
+                    }
+                    responder = responder!.next
+                }
+            }
+        })
     }
 
-    // To add configuration options via table cells at the bottom of the sheet, return an array of SLComposeSheetConfigurationItem here.
-    override func configurationItems() -> [Any]! {
-        let item = SLComposeSheetConfigurationItem()
-        
-        item?.title = "위치정보를 공유합시다 PICK!!!!!!!!"
-        // item?.tapHandler : 유저가 터치했을 때 호출되는 핸들러
-        return [item]
-    }
 }
