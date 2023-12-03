@@ -38,47 +38,46 @@ class ShareViewController: SLComposeServiceViewController {
                     itemProvider.loadItem(forTypeIdentifier: kUTTypeURL as String, options: nil, completionHandler: { (url, error) in
                         if let url = url as? URL {
                             self.sharedURL = url
-                            print("swiftSoup")
                             // Download and parse HTML to get meta tags
-                            let task = URLSession.shared.dataTask(with: url) { (data, response, error) in
-                                if let data = data, let html = String(data: data, encoding: .utf8) {
-                                    do {
-                                        let doc = try SwiftSoup.parse(html)
-                                        var shareText = ""
+                            // let task = URLSession.shared.dataTask(with: url) { (data, response, error) in
+                            //     if let data = data, let html = String(data: data, encoding: .utf8) {
+                            //         do {
+                            //             let doc = try SwiftSoup.parse(html)
+                            //             var shareText = ""
                                         
-                                        if let siteNameMetaTag = try doc.select("meta[property=og:site_name]").first() {
-                                            let siteName = try siteNameMetaTag.attr("content")
-                                            shareText += "Site Name: \(siteName)\n"
-                                        }
+                            //             if let siteNameMetaTag = try doc.select("meta[property=og:site_name]").first() {
+                            //                 let siteName = try siteNameMetaTag.attr("content")
+                            //                 shareText += "SiteName: \(siteName)\n"
+                            //             }
                                         
-                                        if let titleMetaTag = try doc.select("meta[property=og:title]").first() {
-                                            let title = try titleMetaTag.attr("content")
-                                            shareText += "Title: \(title)\n"
-                                        }
+                            //             if let titleMetaTag = try doc.select("meta[property=og:title]").first() {
+                            //                 let title = try titleMetaTag.attr("content")
+                            //                 shareText += "Title: \(title)\n"
+                            //             }
                                         
-                                        if let descriptionMetaTag = try doc.select("meta[property=og:description]").first() {
-                                            let description = try descriptionMetaTag.attr("content")
-                                            shareText += "Description: \(description)\n"
-                                        }
+                            //             if let descriptionMetaTag = try doc.select("meta[property=og:description]").first() {
+                            //                 let description = try descriptionMetaTag.attr("content")
+                            //                 shareText += "Description: \(description)\n"
+                            //             }
 
-                                        if let websiteMetaTag = try doc.select("meta[name=website]").first() {
-                                            let website = try websiteMetaTag.attr("content")
-                                            shareText += "Website: \(website)\n"
-                                        }
+                            //             // if let imageMetaTag = try doc.select("meta[property=og:image]").first() {
+                            //             //     let image = try imageMetaTag.attr("content")
+                            //             //     shareText += "MetaImage: \(image)\n"
+                            //             // }
 
-                                        if let imageMetaTag = try doc.select("meta[property=og:image]").first() {
-                                            let image = try imageMetaTag.attr("content")
-                                            shareText += "metaImage: \(image)\n"
-                                        }
+                            //             if let websiteMetaTag = try doc.select("meta[name=website]").first() {
+                            //                 let website = try websiteMetaTag.attr("content")
+                            //                 shareText += "Website: \(website)\n"
+                            //             }
                                         
-                                        self.sharedText = shareText
-                                    } catch {
-                                        print("Failed to parse HTML: \(error)")
-                                    }
+                            //             self.sharedText = shareText
+                            //         } catch {
+                            //             print("Failed to parse HTML: \(error)")
+                            //         }
 
-                                }
-                            }
-                            task.resume()
+                            //     }
+                            // }
+                            // task.resume()
                         }
                     })
                 }
