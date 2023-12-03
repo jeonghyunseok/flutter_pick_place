@@ -44,12 +44,38 @@ class ShareViewController: SLComposeServiceViewController {
                                 if let data = data, let html = String(data: data, encoding: .utf8) {
                                     do {
                                         let doc = try SwiftSoup.parse(html)
-                                        if let metaTag = try doc.select("meta[name=description]").first() {
-                                            self.sharedMetaTag = try metaTag.attr("content")
+                                        var shareText = ""
+                                        
+                                        if let siteNameMetaTag = try doc.select("meta[property=og:site_name]").first() {
+                                            let siteName = try siteNameMetaTag.attr("content")
+                                            shareText += "Site Name: \(siteName)\n"
                                         }
+                                        
+                                        if let titleMetaTag = try doc.select("meta[property=og:title]").first() {
+                                            let title = try titleMetaTag.attr("content")
+                                            shareText += "Title: \(title)\n"
+                                        }
+                                        
+                                        if let descriptionMetaTag = try doc.select("meta[property=og:description]").first() {
+                                            let description = try descriptionMetaTag.attr("content")
+                                            shareText += "Description: \(description)\n"
+                                        }
+
+                                        if let websiteMetaTag = try doc.select("meta[name=websit]").first() {
+                                            let website = try websiteMetaTag.attr("content")
+                                            shareText += "Website: \(website)\n"
+                                        }
+
+                                        if let imageMetaTag = try doc.select("meta[property=og:image]").first() {
+                                            let image = try imageMetaTag.attr("content")
+                                            shareText += "Image: \(image)\n"
+                                        }
+                                        
+                                        self.sharedText = shareText
                                     } catch {
                                         print("Failed to parse HTML: \(error)")
                                     }
+
                                 }
                             }
                             task.resume()
