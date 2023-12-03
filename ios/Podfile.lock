@@ -2,10 +2,16 @@ PODS:
   - Flutter (1.0.0)
   - receive_sharing_intent (0.0.1):
     - Flutter
+  - SwiftSoup (2.3.8)
 
 DEPENDENCIES:
   - Flutter (from `Flutter`)
   - receive_sharing_intent (from `.symlinks/plugins/receive_sharing_intent/ios`)
+  - SwiftSoup (~> 2.3.2)
+
+SPEC REPOS:
+  trunk:
+    - SwiftSoup
 
 EXTERNAL SOURCES:
   Flutter:
@@ -16,7 +22,8 @@ EXTERNAL SOURCES:
 SPEC CHECKSUMS:
   Flutter: f04841e97a9d0b0a8025694d0796dd46242b2854
   receive_sharing_intent: c0d87310754e74c0f9542947e7cbdf3a0335a3b1
+  SwiftSoup: ba8ea2c91151881a298cba4b0628ef31e835a77f
 
-PODFILE CHECKSUM: 70d9d25280d0dd177a5f637cdb0f0b0b12c6a189
+PODFILE CHECKSUM: 8b68800200973931258ff5d266cc8217e6d245af
 
 COCOAPODS: 1.14.3

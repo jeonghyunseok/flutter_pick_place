@@ -2,6 +2,7 @@ import UIKit
 import Social
 import MobileCoreServices
 import CoreLocation
+import SwiftSoup
 
 class ShareViewController: SLComposeServiceViewController {
 
@@ -37,11 +38,25 @@ class ShareViewController: SLComposeServiceViewController {
                     itemProvider.loadItem(forTypeIdentifier: kUTTypeURL as String, options: nil, completionHandler: { (url, error) in
                         if let url = url as? URL {
                             self.sharedURL = url
-                            // MetaTag
-                            // Here you can use a library like SwiftSoup to parse the HTML and get the meta tags.
+                            print("swiftSoup")
+                            // Download and parse HTML to get meta tags
+                            let task = URLSession.shared.dataTask(with: url) { (data, response, error) in
+                                if let data = data, let html = String(data: data, encoding: .utf8) {
+                                    do {
+                                        let doc = try SwiftSoup.parse(html)
+                                        if let metaTag = try doc.select("meta[name=description]").first() {
+                                            self.sharedMetaTag = try metaTag.attr("content")
+                                        }
+                                    } catch {
+                                        print("Failed to parse HTML: \(error)")
+                                    }
+                                }
+                            }
+                            task.resume()
                         }
                     })
                 }
+
             }
         }
     }
@@ -50,20 +65,26 @@ class ShareViewController: SLComposeServiceViewController {
         // This is called after the user selects Post. Do the upload of contentText and/or NSExtensionContext attachments.
         debugPrint("didSelectPost")
 
-        // Inform the host that we're done, so it un-blocks its UI.
         self.extensionContext!.completeRequest(returningItems: [], completionHandler: { _ in
             // Open your app here
-            var urlString = "ShareMedia://"
+            var components = URLComponents(string: "ShareMedia://")
+
+            var queryItems = [URLQueryItem]()
             if let sharedText = self.sharedText {
-                urlString += "?text=" + sharedText
+                queryItems.append(URLQueryItem(name: "text", value: sharedText))
             }
             if let sharedURL = self.sharedURL {
-                urlString += "&url=" + sharedURL.absoluteString
+                queryItems.append(URLQueryItem(name: "url", value: sharedURL.absoluteString))
             }
             if let sharedMetaTag = self.sharedMetaTag {
-                urlString += "&metatag=" + sharedMetaTag
+                queryItems.append(URLQueryItem(name: "metatag", value: sharedMetaTag))
             }
-            if let url = URL(string: urlString) {
+
+            components?.queryItems = queryItems
+
+            print("ShareMedia: Pars: \(components?.string ?? "")")
+
+            if let url = components?.url {
                 let selectorOpenURL = sel_registerName("openURL:")
                 var responder: UIResponder? = self
                 while responder != nil {
@@ -75,6 +96,7 @@ class ShareViewController: SLComposeServiceViewController {
                 }
             }
         })
+
     }
 
 
