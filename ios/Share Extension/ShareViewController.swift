@@ -61,14 +61,14 @@ class ShareViewController: SLComposeServiceViewController {
                                             shareText += "Description: \(description)\n"
                                         }
 
-                                        if let websiteMetaTag = try doc.select("meta[name=websit]").first() {
+                                        if let websiteMetaTag = try doc.select("meta[name=website]").first() {
                                             let website = try websiteMetaTag.attr("content")
                                             shareText += "Website: \(website)\n"
                                         }
 
                                         if let imageMetaTag = try doc.select("meta[property=og:image]").first() {
                                             let image = try imageMetaTag.attr("content")
-                                            shareText += "Image: \(image)\n"
+                                            shareText += "metaImage: \(image)\n"
                                         }
                                         
                                         self.sharedText = shareText
@@ -88,7 +88,6 @@ class ShareViewController: SLComposeServiceViewController {
     }
 
     override func didSelectPost() {
-        // This is called after the user selects Post. Do the upload of contentText and/or NSExtensionContext attachments.
         debugPrint("didSelectPost")
 
         self.extensionContext!.completeRequest(returningItems: [], completionHandler: { _ in
